@@ -2,6 +2,11 @@ import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
+import { requireAuth, AuthRequest } from "./src/middleware/auth.ts";
+import { getOrCreateUser } from "./src/db/users.ts";
+import { db } from "./src/db/index.ts";
+import { bookings, savedRoutes, users } from "./src/db/schema.ts";
+import { eq, and, desc } from "drizzle-orm";
 
 const app = express();
 const PORT = 3000;
@@ -21,6 +26,168 @@ if (apiKey) {
     },
   });
 }
+
+// User Profile & Database Sync Endpoint
+app.get("/api/me", requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const uid = req.user?.uid;
+    const email = req.user?.email || "guest@chukyza.com";
+    const name = req.user?.name || req.user?.email?.split("@")[0] || "Rider";
+
+    if (!uid) {
+      return res.status(400).json({ error: "Missing UID" });
+    }
+
+    const dbUser = await getOrCreateUser(uid, email, name);
+
+    // Fetch user bookings & saved routes
+    const userBookings = await db
+      .select()
+      .from(bookings)
+      .where(eq(bookings.userId, dbUser.id))
+      .orderBy(desc(bookings.createdAt));
+
+    const userSavedRoutes = await db
+      .select()
+      .from(savedRoutes)
+      .where(eq(savedRoutes.userId, dbUser.id));
+
+    return res.json({
+      user: dbUser,
+      bookings: userBookings,
+      savedRoutes: userSavedRoutes,
+    });
+  } catch (error: any) {
+    console.error("Error in /api/me:", error);
+    return res.status(500).json({ error: "Failed to fetch user profile" });
+  }
+});
+
+// Bookings Endpoints
+app.get("/api/bookings", requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const uid = req.user?.uid;
+    if (!uid) return res.status(400).json({ error: "Missing UID" });
+
+    const dbUser = await getOrCreateUser(uid, req.user?.email || "");
+    const list = await db
+      .select()
+      .from(bookings)
+      .where(eq(bookings.userId, dbUser.id))
+      .orderBy(desc(bookings.createdAt));
+
+    return res.json(list);
+  } catch (error: any) {
+    console.error("Error GET /api/bookings:", error);
+    return res.status(500).json({ error: "Failed to fetch bookings" });
+  }
+});
+
+app.post("/api/bookings", requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const uid = req.user?.uid;
+    if (!uid) return res.status(400).json({ error: "Missing UID" });
+
+    const { tourId, packageId, date, guests, vehicleType, notes } = req.body;
+    if (!tourId || !date) {
+      return res.status(400).json({ error: "tourId and date are required" });
+    }
+
+    const dbUser = await getOrCreateUser(uid, req.user?.email || "");
+
+    const newBooking = await db
+      .insert(bookings)
+      .values({
+        userId: dbUser.id,
+        tourId,
+        packageId: packageId || null,
+        date,
+        guests: Number(guests) || 1,
+        vehicleType: vehicleType || "Can-Am Maverick X3",
+        notes: notes || "",
+        status: "confirmed",
+      })
+      .returning();
+
+    return res.status(201).json(newBooking[0]);
+  } catch (error: any) {
+    console.error("Error POST /api/bookings:", error);
+    return res.status(500).json({ error: "Failed to create booking" });
+  }
+});
+
+// Saved Routes Endpoints
+app.get("/api/saved-routes", requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const uid = req.user?.uid;
+    if (!uid) return res.status(400).json({ error: "Missing UID" });
+
+    const dbUser = await getOrCreateUser(uid, req.user?.email || "");
+    const list = await db
+      .select()
+      .from(savedRoutes)
+      .where(eq(savedRoutes.userId, dbUser.id));
+
+    return res.json(list);
+  } catch (error: any) {
+    console.error("Error GET /api/saved-routes:", error);
+    return res.status(500).json({ error: "Failed to fetch saved routes" });
+  }
+});
+
+app.post("/api/saved-routes", requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const uid = req.user?.uid;
+    if (!uid) return res.status(400).json({ error: "Missing UID" });
+
+    const { tourId } = req.body;
+    if (!tourId) return res.status(400).json({ error: "tourId is required" });
+
+    const dbUser = await getOrCreateUser(uid, req.user?.email || "");
+
+    // Check if already saved
+    const existing = await db
+      .select()
+      .from(savedRoutes)
+      .where(and(eq(savedRoutes.userId, dbUser.id), eq(savedRoutes.tourId, tourId)));
+
+    if (existing.length > 0) {
+      return res.json(existing[0]);
+    }
+
+    const created = await db
+      .insert(savedRoutes)
+      .values({
+        userId: dbUser.id,
+        tourId,
+      })
+      .returning();
+
+    return res.status(201).json(created[0]);
+  } catch (error: any) {
+    console.error("Error POST /api/saved-routes:", error);
+    return res.status(500).json({ error: "Failed to save route" });
+  }
+});
+
+app.delete("/api/saved-routes/:tourId", requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const uid = req.user?.uid;
+    if (!uid) return res.status(400).json({ error: "Missing UID" });
+
+    const tourId = req.params.tourId;
+    const dbUser = await getOrCreateUser(uid, req.user?.email || "");
+
+    await db
+      .delete(savedRoutes)
+      .where(and(eq(savedRoutes.userId, dbUser.id), eq(savedRoutes.tourId, tourId)));
+
+    return res.json({ success: true });
+  } catch (error: any) {
+    console.error("Error DELETE /api/saved-routes:", error);
+    return res.status(500).json({ error: "Failed to delete saved route" });
+  }
+});
 
 // Route Recommendation API
 app.post("/api/recommend-route", async (req, res) => {
