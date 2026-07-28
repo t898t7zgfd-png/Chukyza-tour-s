@@ -1,0 +1,6 @@
+{
+  "name": "Chukyza Tours Mazamitla",
+  "description": "Premium off-road UTV & ATV adventure tours in Mazamitla, Jalisco.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
