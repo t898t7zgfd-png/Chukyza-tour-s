@@ -201,13 +201,18 @@ app.post("/api/recommend-route", async (req, res) => {
       return res.json(getFallbackMatch(query, lang));
     }
 
-    const systemPrompt = `You are the lead trail master at Chukyza Tours in Mazamitla, Jalisco.
-We have 3 tours:
-1) "forest-gauntlet" (Hardcore, pro mud, steep rock crawling, 4hrs)
-2) "twilight-run" (Most popular, sunset ridge, night LED ride, forest bonfire, 6hrs)
-3) "scenic-ridge" (Relaxed, scenic views, pine forest, beginner/family friendly, 3hrs)
+    const systemPrompt = `You are the lead trail master at Chukyza Tours (-MAZAVENTURA-) in Mazamitla, Jalisco.
+We have 8 official tours:
+1) "sierra-del-tigre-1h": -MAZAVENTURA- / "Mirador de la Sierra del Tigre" (1 Hora)
+2) "sierra-tigre-valle-juarez-2h": -MAZAVENTURA- / "Mirador de la Sierra del Tigre" / "Mirador Sierra del Tigre"-Valle de Juárez / Malecón "Presa" Valle de Juárez (2 Horas)
+3) "corazon-aguacatera-hacienda-1h": -MAZAVENTURA- / "Mirador Corazón de la Aguacatera" / "Hacienda Abandonada" (1 Hora)
+4) "cascada-el-salto-2h": -MAZAVENTURA- / "Cascada el Salto" (2 Horas)
+5) "mirador-dos-aguas-1h": -MAZAVENTURA- / (Mirador "Dos Aguas") (1 Hora)
+6) "dos-aguas-barranca-hacienda-2h": -MAZAVENTURA- / (Mirador "Dos Aguas") / "Barranca Verde" / "Hacienda Abandonada" (2 Horas)
+7) "camino-real-del-tigre-3h": -MAZAVENTURA- / "CAMINO REAL DEL TIGRE" (3 Horas)
+8) "puerta-del-cielo-la-chuta": -MAZAVENTURA- / (Mirador "Puerta del Cielo") / (Cantina "La Chuta Parada Obligatoria") (2 Horas)
 
-Analyze the user's request and pick the single best tourId out of ['forest-gauntlet', 'twilight-run', 'scenic-ridge'].
+Analyze the user's request and pick the single best tourId out of ['sierra-del-tigre-1h', 'sierra-tigre-valle-juarez-2h', 'corazon-aguacatera-hacienda-1h', 'cascada-el-salto-2h', 'mirador-dos-aguas-1h', 'dos-aguas-barranca-hacienda-2h', 'camino-real-del-tigre-3h', 'puerta-del-cielo-la-chuta'].
 Respond in JSON format with fields:
 - tourId: string
 - reason: concise 2-sentence explanation in language '${lang || 'es'}'
@@ -237,41 +242,53 @@ Respond in JSON format with fields:
 
 function getFallbackMatch(query: string, lang: string) {
   const text = query.toLowerCase();
-  if (text.includes("noche") || text.includes("fogata") || text.includes("night") || text.includes("bonfire")) {
+  if (text.includes("cantina") || text.includes("chuta") || text.includes("puerta") || text.includes("cielo")) {
     return {
-      tourId: "twilight-run",
+      tourId: "puerta-del-cielo-la-chuta",
       reason:
         lang === "es"
-          ? 'La "Ruta del Crepúsculo" es perfecta para ti: incluye el atardecer en las cumbres, luces LED de alta potencia y culmina en la fogata gigante con asado.'
-          : 'The "Twilight Run" is tailored for you: golden hour sunset peaks, powerful LED light bars, and an authentic forest bonfire.',
+          ? 'La ruta "Puerta del Cielo & Cantina La Chuta" es perfecta: vistas celestiales sobre las nubes y parada obligatoria en la cantina tradicional.'
+          : 'The "Puerta del Cielo & Cantina La Chuta" route is ideal: heavenly cloud vistas and a mandatory traditional cantina stop.',
       customTip:
         lang === "es"
-          ? "Tip del Guía: Trae chamarra abrigadora para la fogata de la noche."
-          : "Guide Tip: Bring a warm jacket for the mountain campsite bonfire.",
+          ? "Tip del Guía: Disfruta de las bebidas artesanales regionales en la cantina."
+          : "Guide Tip: Enjoy traditional regional craft beverages at the cantina.",
     };
-  } else if (text.includes("familia") || text.includes("tranquilo") || text.includes("family") || text.includes("scenic")) {
+  } else if (text.includes("cascada") || text.includes("salto") || text.includes("waterfall")) {
     return {
-      tourId: "scenic-ridge",
+      tourId: "cascada-el-salto-2h",
       reason:
         lang === "es"
-          ? 'Te recomendamos "Cresta Panorámica": un recorrido suave por el pinar La Toscana con paradas fotográficas en los miradores principales.'
-          : 'We match you with "Scenic Ridge": a smooth, comfortable tour through La Toscana pine forest with panoramic overlook stops.',
+          ? 'Te recomendamos "Cascada El Salto" (2 Horas): un recorrido aventurero que cruza cañadas y ríos hasta la caída de agua.'
+          : 'We recommend "Cascada El Salto" (2 Hours): an adventurous ride crossing rivers and mountain gorges to the waterfall.',
       customTip:
         lang === "es"
-          ? "Tip del Guía: Incluye parada en la cafetería artesanal de la montaña."
-          : "Guide Tip: Includes a stop at the mountain coffee house.",
+          ? "Tip del Guía: Trae calzado cómodo para acercarte a la caída de agua."
+          : "Guide Tip: Wear comfortable shoes for walking near the waterfall.",
+    };
+  } else if (text.includes("camino real") || text.includes("3 hora") || text.includes("3 hour") || text.includes("larga")) {
+    return {
+      tourId: "camino-real-del-tigre-3h",
+      reason:
+        lang === "es"
+          ? 'El "CAMINO REAL DEL TIGRE" (3 Horas) es tu mejor opción para una travesía profunda y desafiante por la serranía.'
+          : '"CAMINO REAL DEL TIGRE" (3 Hours) is your top choice for a long, deep off-road mountain journey.',
+      customTip:
+        lang === "es"
+          ? "Tip del Guía: Incluye refrigerio en la montaña y fotos HD."
+          : "Guide Tip: Includes mountain refreshments and HD photography.",
     };
   } else {
     return {
-      tourId: "forest-gauntlet",
+      tourId: "sierra-tigre-valle-juarez-2h",
       reason:
         lang === "es"
-          ? 'El "Guantelete del Bosque" es tu mejor opción: pura acción entre lodo profundo, grietas de rocas y brechas de aceleración extrema.'
-          : '"Forest Gauntlet" fits your drive: intense mud pits, rock crawling, and maximum wheel spinning.',
+          ? 'Te recomendamos el circuito "Mirador Sierra del Tigre & Presa Valle de Juárez" (2 Horas): la combinación perfecta de cumbres y lago.'
+          : 'We recommend "Sierra del Tigre & Valle de Juárez Dam" (2 Hours): the perfect blend of summit peaks and lakefront views.',
       customTip:
         lang === "es"
-          ? "Tip del Guía: Incluimos paquete de grabación GoPro en HD."
-          : "Guide Tip: GoPro HD video package is included.",
+          ? "Tip del Guía: Es nuestra ruta más popular de 2 horas."
+          : "Guide Tip: Our most popular 2-hour signature circuit.",
     };
   }
 }

@@ -37,6 +37,17 @@ export interface GalleryItem {
   rowSpan?: string;
 }
 
+export interface VideoItem {
+  id: string;
+  title: Record<Language, string>;
+  category: Record<Language, string>;
+  duration: string;
+  thumbnail: string;
+  videoUrl: string;
+  location: string;
+  views?: string;
+}
+
 export interface FAQItem {
   id: string;
   question: Record<Language, string>;

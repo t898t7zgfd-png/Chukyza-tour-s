@@ -21,16 +21,16 @@ export const AiRouteAssistant: React.FC<AiRouteAssistantProps> = ({
 
   const presets = [
     {
-      label: lang === 'es' ? '🔥 Noche, Fogata y Lodo' : '🔥 Night, Bonfire & Mud',
-      query: 'Quiero una aventura nocturna con lodo, luces LED y terminar en una fogata con carne asada.',
+      label: lang === 'es' ? '🍻 Cantina La Chuta & Puerta del Cielo' : '🍻 La Chuta Cantina & Puerta del Cielo',
+      query: 'Quiero una ruta panorámica de 2 horas con vistas de altura y parada en la cantina tradicional.',
     },
     {
-      label: lang === 'es' ? '👨‍👩‍👧‍👦 Familiar con Niños' : '👨‍👩‍👧‍👦 Family with Kids',
-      query: 'Busco un recorrido tranquilo y seguro para mi familia con vistas bonitas y fotos.',
+      label: lang === 'es' ? '⛰️ Camino Real 3 Horas' : '⛰️ Camino Real 3 Hours',
+      query: 'Busco la travesía más larga y técnica por la serranía del Camino Real del Tigre.',
     },
     {
-      label: lang === 'es' ? '🏎️ Adrenalina Extrema Pro' : '🏎️ Hardcore Extreme Adrenaline',
-      query: 'Somos pilotos experimentados buscando la ruta más difícil con lodo profundo y brechas rocosas.',
+      label: lang === 'es' ? '🌊 Cascada El Salto' : '🌊 El Salto Waterfall',
+      query: 'Queremos conocer la Cascada El Salto en un recorrido de 2 horas.',
     },
   ];
 
@@ -66,41 +66,53 @@ export const AiRouteAssistant: React.FC<AiRouteAssistantProps> = ({
 
   const generateFallbackRecommendation = (q: string) => {
     const text = q.toLowerCase();
-    if (text.includes('noche') || text.includes('fogata') || text.includes('night') || text.includes('bonfire')) {
+    if (text.includes('cantina') || text.includes('chuta') || text.includes('puerta') || text.includes('cielo')) {
       setRecommendation({
-        tourId: 'twilight-run',
+        tourId: 'puerta-del-cielo-la-chuta',
         reason:
           lang === 'es'
-            ? 'La "Ruta del Crepúsculo" es perfecta para ti: incluye el atardecer en las cumbres, luces LED de alta potencia y culmina en la fogata gigante con asado.'
-            : 'The "Twilight Run" is tailored for you: golden hour sunset peaks, powerful LED light bars, and an authentic forest bonfire.',
+            ? 'La ruta "Puerta del Cielo & Cantina La Chuta" es perfecta: vistas celestiales sobre las nubes y parada obligatoria tradicional.'
+            : 'The "Puerta del Cielo & Cantina La Chuta" route is ideal: heavenly cloud vistas and a mandatory traditional cantina stop.',
         customTip:
           lang === 'es'
-            ? 'Tip del Guía: Trae chamarra abrigadora para la fogata de la noche.'
-            : 'Guide Tip: Bring a warm jacket for the mountain campsite bonfire.',
+            ? 'Tip del Guía: Disfruta de las bebidas artesanales regionales en la cantina.'
+            : 'Guide Tip: Enjoy traditional regional craft beverages at the cantina.',
       });
-    } else if (text.includes('familia') || text.includes('tranquilo') || text.includes('family') || text.includes('scenic')) {
+    } else if (text.includes('cascada') || text.includes('salto') || text.includes('waterfall')) {
       setRecommendation({
-        tourId: 'scenic-ridge',
+        tourId: 'cascada-el-salto-2h',
         reason:
           lang === 'es'
-            ? 'Te recomendamos "Cresta Panorámica": un recorrido suave por el pinar La Toscana con paradas fotográficas en los miradores principales.'
-            : 'We match you with "Scenic Ridge": a smooth, comfortable tour through La Toscana pine forest with panoramic overlook stops.',
+            ? 'Te recomendamos "Cascada El Salto" (2 Horas): un recorrido aventurero que cruza cañadas y ríos hasta la caída de agua.'
+            : 'We recommend "Cascada El Salto" (2 Hours): an adventurous ride crossing rivers and mountain gorges to the waterfall.',
         customTip:
           lang === 'es'
-            ? 'Tip del Guía: Incluye parada en la cafetería artesanal de la montaña.'
-            : 'Guide Tip: Includes a stop at the mountain coffee house.',
+            ? 'Tip del Guía: Trae calzado cómodo para acercarte a la caída de agua.'
+            : 'Guide Tip: Wear comfortable shoes for walking near the waterfall.',
+      });
+    } else if (text.includes('camino real') || text.includes('3 hora') || text.includes('3 hour') || text.includes('larga')) {
+      setRecommendation({
+        tourId: 'camino-real-del-tigre-3h',
+        reason:
+          lang === 'es'
+            ? 'El "CAMINO REAL DEL TIGRE" (3 Horas) es tu mejor opción para una travesía profunda y desafiante por la serranía.'
+            : '"CAMINO REAL DEL TIGRE" (3 Hours) is your top choice for a long, deep off-road mountain journey.',
+        customTip:
+          lang === 'es'
+            ? 'Tip del Guía: Incluye refrigerio en la montaña y fotos HD.'
+            : 'Guide Tip: Includes mountain refreshments and HD photography.',
       });
     } else {
       setRecommendation({
-        tourId: 'forest-gauntlet',
+        tourId: 'sierra-tigre-valle-juarez-2h',
         reason:
           lang === 'es'
-            ? 'El "Guantelete del Bosque" es tu mejor opción: pura acción entre lodo profundo, grietas de rocas y brechas de aceleración extrema.'
-            : '"Forest Gauntlet" fits your drive: intense mud pits, rock crawling, and maximum wheel spinning.',
+            ? 'Te recomendamos el circuito "Mirador Sierra del Tigre & Presa Valle de Juárez" (2 Horas): la combinación perfecta de cumbres y lago.'
+            : 'We recommend "Sierra del Tigre & Valle de Juárez Dam" (2 Hours): the perfect blend of summit peaks and lakefront views.',
         customTip:
           lang === 'es'
-            ? 'Tip del Guía: Incluimos paquete de grabación GoPro en HD.'
-            : 'Guide Tip: GoPro HD video package is included.',
+            ? 'Tip del Guía: Es nuestra ruta más popular de 2 horas.'
+            : 'Guide Tip: Our most popular 2-hour signature circuit.',
       });
     }
   };

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'motion/react';
 import { Tour, Language } from '../types';
 import { TOURS_DATA } from '../data/toursData';
 import { Clock, TrendingUp, ArrowRight, ShieldAlert, Sparkles } from 'lucide-react';
@@ -14,16 +15,18 @@ export const ToursSection: React.FC<ToursSectionProps> = ({ lang, onSelectTour, 
 
   const filters = [
     { id: 'all', label: lang === 'es' ? 'Todas las Rutas' : 'All Tours' },
-    { id: 'hardcore', label: lang === 'es' ? 'Extremo' : 'Hardcore' },
-    { id: 'popular', label: lang === 'es' ? 'Más Popular' : 'Most Popular' },
-    { id: 'relaxed', label: lang === 'es' ? 'Relajado' : 'Relaxed' },
+    { id: '1h', label: lang === 'es' ? '1 Hora' : '1 Hour' },
+    { id: '2h', label: lang === 'es' ? '2 Horas' : '2 Hours' },
+    { id: '3h', label: lang === 'es' ? '3 Horas' : '3 Hours' },
+    { id: 'featured', label: lang === 'es' ? 'Destacadas' : 'Featured' },
   ];
 
   const filteredTours = TOURS_DATA.filter((tour) => {
     if (activeFilter === 'all') return true;
-    if (activeFilter === 'hardcore') return tour.id === 'forest-gauntlet';
-    if (activeFilter === 'popular') return tour.featured;
-    if (activeFilter === 'relaxed') return tour.id === 'scenic-ridge';
+    if (activeFilter === '1h') return tour.duration.includes('1');
+    if (activeFilter === '2h') return tour.duration.includes('2');
+    if (activeFilter === '3h') return tour.duration.includes('3');
+    if (activeFilter === 'featured') return tour.featured;
     return true;
   });
 
@@ -31,7 +34,13 @@ export const ToursSection: React.FC<ToursSectionProps> = ({ lang, onSelectTour, 
     <section id="tours" className="py-24 bg-[#131313] relative">
       <div className="max-w-7xl mx-auto px-4 md:px-12">
         {/* Header Row */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-12 gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-12 gap-6"
+        >
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#ff7a00] mb-2">
               <Sparkles className="w-4 h-4" />
@@ -63,16 +72,20 @@ export const ToursSection: React.FC<ToursSectionProps> = ({ lang, onSelectTour, 
               </button>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Tour Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-          {filteredTours.map((tour) => {
+          {filteredTours.map((tour, index) => {
             const isFeatured = tour.featured;
 
             return (
-              <div
+              <motion.div
                 key={tour.id}
+                initial={{ opacity: 0, y: 35 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.5, delay: index * 0.08 }}
                 className={`bg-[#2a2a2a] rounded-[24px] overflow-hidden card-hover border shadow-2xl flex flex-col justify-between transition-all ${
                   isFeatured
                     ? 'border-[#ff7a00] md:-translate-y-3 shadow-[0_0_35px_rgba(255,122,0,0.25)] relative'
@@ -151,17 +164,7 @@ export const ToursSection: React.FC<ToursSectionProps> = ({ lang, onSelectTour, 
                           : 'bg-[#353535] hover:bg-[#ff7a00] hover:text-[#2b1700] text-white'
                       }`}
                     >
-                      {tour.id === 'forest-gauntlet'
-                        ? lang === 'es'
-                          ? 'Reservar Expedición'
-                          : 'Book Expedition'
-                        : tour.id === 'twilight-run'
-                        ? lang === 'es'
-                          ? 'Reservar Paseo Nocturno'
-                          : 'Book Night Ride'
-                        : lang === 'es'
-                        ? 'Reservar Explorador'
-                        : 'Book Explorer'}
+                      {lang === 'es' ? 'Reservar Esta Ruta' : 'Book This Tour'}
                     </button>
                     <button
                       onClick={() => onSelectTour(tour)}
@@ -171,7 +174,7 @@ export const ToursSection: React.FC<ToursSectionProps> = ({ lang, onSelectTour, 
                     </button>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
