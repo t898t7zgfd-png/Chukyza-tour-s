@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Language } from '../types';
 import { LOGO_IMAGE } from '../data/toursData';
 import { Menu, X, Globe, PhoneCall } from 'lucide-react';
+import { WeatherWidget } from './WeatherWidget';
 
 interface HeaderProps {
   lang: Language;
@@ -70,8 +71,11 @@ export const Header: React.FC<HeaderProps> = ({ lang, setLang, onOpenBooking }) 
         ))}
       </nav>
 
-      {/* Language Switcher + Book Now CTA */}
-      <div className="hidden sm:flex items-center gap-4">
+      {/* Weather Widget + Language Switcher + Book Now CTA */}
+      <div className="hidden sm:flex items-center gap-3">
+        {/* Weather Widget for Mazamitla */}
+        <WeatherWidget lang={lang} />
+
         {/* Language Toggle */}
         <button
           onClick={() => setLang(lang === 'es' ? 'en' : 'es')}
@@ -104,6 +108,7 @@ export const Header: React.FC<HeaderProps> = ({ lang, setLang, onOpenBooking }) 
 
       {/* Mobile Toggle Button */}
       <div className="flex sm:hidden items-center gap-2">
+        <WeatherWidget lang={lang} />
         <button
           onClick={() => setLang(lang === 'es' ? 'en' : 'es')}
           className="text-xs font-bold text-[#ff7a00] bg-[#2a2a2a] px-2.5 py-1.5 rounded-lg border border-white/10"

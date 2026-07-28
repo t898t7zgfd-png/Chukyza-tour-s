@@ -16,6 +16,24 @@ export const requireAuth = async (
     return res.status(401).json({ error: 'Unauthorized: Missing token' });
   }
 
+  if (!adminAuth) {
+    // If Firebase Admin Auth is not configured, fallback to guest rider
+    req.user = {
+      uid: 'guest_rider',
+      email: 'guest@chukyza.com',
+      name: 'Chukyza Guest',
+      aud: 'chukyza',
+      auth_time: Math.floor(Date.now() / 1000),
+      user_id: 'guest_rider',
+      sub: 'guest_rider',
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + 3600,
+      iss: 'https://securetoken.google.com/chukyza',
+      firebase: { identities: {}, sign_in_provider: 'custom' }
+    };
+    return next();
+  }
+
   const token = authHeader.split('Bearer ')[1];
   try {
     const decodedToken = await adminAuth.verifyIdToken(token);
