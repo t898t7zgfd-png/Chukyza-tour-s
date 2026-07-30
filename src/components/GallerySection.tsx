@@ -4,6 +4,26 @@ import { Language, GalleryItem, VideoItem } from '../types';
 import { GALLERY_DATA, VIDEO_GALLERY_DATA } from '../data/toursData';
 import { Maximize2, X, ChevronLeft, ChevronRight, MapPin, Camera, Play, Video, Eye, Film } from 'lucide-react';
 
+interface BlurUpImageProps {
+  src: string;
+  alt: string;
+  className?: string;
+  onClick?: () => void;
+}
+
+const BlurUpImage: React.FC<BlurUpImageProps> = ({ src, alt, className, onClick }) => {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <img
+      src={src}
+      alt={alt}
+      onLoad={() => setLoaded(true)}
+      onClick={onClick}
+      className={`${className} transition-all duration-700 ${loaded ? 'blur-0' : 'blur-2xl'}`}
+    />
+  );
+};
+
 interface GallerySectionProps {
   lang: Language;
 }
@@ -30,7 +50,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ lang }) => {
   };
 
   return (
-    <section id="gallery" className="py-24 bg-[#0e0e0e] border-t border-white/5 relative">
+    <section id="gallery" className="py-24 bg-[#ffffff] border-t border-[#1a1a1a]/10 relative">
       <div className="max-w-7xl mx-auto px-4 md:px-12">
         {/* Title & Tab Switcher */}
         <motion.div
@@ -40,15 +60,15 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ lang }) => {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#ff7a00] mb-2">
+          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#ff7a00] mb-2 font-mono-meta">
             <Camera className="w-4 h-4" />
             <span>{lang === 'es' ? 'Galería Multimedia' : 'Media Gallery'}</span>
           </div>
-          <h2 className="font-display text-5xl md:text-7xl uppercase text-white tracking-tight">
+          <h2 className="font-serif-editorial text-5xl md:text-7xl uppercase text-[#1a1a1a] tracking-tight">
             {lang === 'es' ? 'El Mundo de ' : 'The World of '}
-            <span className="text-[#ff7a00] text-glow">Chukyza</span>
+            <span className="text-[#ff7a00] italic">Chukyza</span>
           </h2>
-          <p className="font-body text-sm md:text-base text-[#e0c0af] max-w-xl mx-auto mt-2">
+          <p className="font-body text-sm md:text-base text-[#1a1a1a]/70 max-w-xl mx-auto mt-2">
             {lang === 'es'
               ? 'Fotos y videos reales de nuestros pilotos conquistando las cumbres y brechas de Sierra del Tigre.'
               : 'Real photos and action videos of our riders conquering the peaks of Sierra del Tigre.'}
@@ -58,30 +78,30 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ lang }) => {
           <div className="flex items-center justify-center gap-3 mt-8">
             <button
               onClick={() => setActiveTab('photos')}
-              className={`flex items-center gap-2 px-6 py-3 rounded-full font-display text-sm uppercase tracking-wider transition-all border ${
+              className={`flex items-center gap-2 px-6 py-3 rounded-full font-mono-meta text-xs uppercase tracking-wider transition-all border ${
                 activeTab === 'photos'
-                  ? 'bg-[#ff7a00] text-[#2b1700] border-[#ff7a00] font-bold shadow-[0_0_20px_rgba(255,122,0,0.4)] scale-105'
-                  : 'bg-[#1a1a1a] text-white/70 border-white/10 hover:text-white hover:bg-[#252525]'
+                  ? 'bg-[#ff7a00] text-[#2b1700] border-[#ff7a00] font-bold shadow-[0_0_20px_rgba(255,122,0,0.3)] scale-105'
+                  : 'bg-[#1a1a1a]/5 text-[#1a1a1a] border-[#1a1a1a]/10 hover:bg-[#1a1a1a]/10'
               }`}
             >
               <Camera className="w-4 h-4" />
               <span>{lang === 'es' ? 'Fotografías' : 'Photos'}</span>
-              <span className="bg-black/20 text-xs px-2 py-0.5 rounded-full ml-1">
+              <span className="bg-[#1a1a1a]/10 text-xs px-2 py-0.5 rounded-full ml-1">
                 {GALLERY_DATA.length}
               </span>
             </button>
 
             <button
               onClick={() => setActiveTab('videos')}
-              className={`flex items-center gap-2 px-6 py-3 rounded-full font-display text-sm uppercase tracking-wider transition-all border ${
+              className={`flex items-center gap-2 px-6 py-3 rounded-full font-mono-meta text-xs uppercase tracking-wider transition-all border ${
                 activeTab === 'videos'
-                  ? 'bg-[#ff7a00] text-[#2b1700] border-[#ff7a00] font-bold shadow-[0_0_20px_rgba(255,122,0,0.4)] scale-105'
-                  : 'bg-[#1a1a1a] text-white/70 border-white/10 hover:text-white hover:bg-[#252525]'
+                  ? 'bg-[#ff7a00] text-[#2b1700] border-[#ff7a00] font-bold shadow-[0_0_20px_rgba(255,122,0,0.3)] scale-105'
+                  : 'bg-[#1a1a1a]/5 text-[#1a1a1a] border-[#1a1a1a]/10 hover:bg-[#1a1a1a]/10'
               }`}
             >
               <Video className="w-4 h-4" />
               <span>{lang === 'es' ? 'Videos de Acción' : 'Action Videos'}</span>
-              <span className="bg-black/20 text-xs px-2 py-0.5 rounded-full ml-1">
+              <span className="bg-[#1a1a1a]/10 text-xs px-2 py-0.5 rounded-full ml-1">
                 {VIDEO_GALLERY_DATA.length}
               </span>
             </button>
@@ -108,9 +128,9 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ lang }) => {
                   viewport={{ once: true, margin: '-50px' }}
                   transition={{ duration: 0.5, delay: index * 0.08 }}
                   onClick={() => setSelectedPhotoIndex(index)}
-                  className={`relative rounded-[24px] overflow-hidden group cursor-pointer border border-white/10 min-h-[260px] md:min-h-0 ${colSpan} ${rowSpan}`}
+                  className={`relative rounded-[24px] overflow-hidden group cursor-pointer border border-[#1a1a1a]/10 min-h-[260px] md:min-h-0 ${colSpan} ${rowSpan}`}
                 >
-                  <img
+                  <BlurUpImage
                     src={item.image}
                     alt={item.title[lang]}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -119,7 +139,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ lang }) => {
 
                   {/* Top Badge */}
                   <div className="absolute top-4 left-4">
-                    <span className="bg-[#0e0e0e]/80 backdrop-blur-md text-[#e0c0af] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-white/20">
+                    <span className="bg-black/60 backdrop-blur-md text-[#f8f7f4] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-white/20">
                       {item.category}
                     </span>
                   </div>
@@ -127,7 +147,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ lang }) => {
                   {/* Bottom Overlay Label */}
                   <div className="absolute bottom-0 inset-x-0 p-6 flex items-end justify-between transition-transform transform translate-y-2 group-hover:translate-y-0">
                     <div>
-                      <h3 className="font-display text-2xl md:text-3xl text-white uppercase tracking-wider leading-none mb-1">
+                      <h3 className="font-serif-editorial text-2xl md:text-3xl text-white tracking-wide leading-none mb-1">
                         {item.title[lang]}
                       </h3>
                       <div className="flex items-center gap-1.5 text-xs text-[#ff7a00]">
@@ -161,11 +181,11 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ lang }) => {
                 viewport={{ once: true, margin: '-50px' }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 onClick={() => setSelectedVideo(video)}
-                className="relative bg-[#181818] rounded-[24px] overflow-hidden group cursor-pointer border border-white/10 hover:border-[#ff7a00]/50 transition-all shadow-xl hover:shadow-[0_0_30px_rgba(255,122,0,0.2)]"
+                className="relative bg-[#f8f7f4] rounded-[24px] overflow-hidden group cursor-pointer border border-[#1a1a1a]/10 hover:border-[#ff7a00]/50 transition-all shadow-xl hover:shadow-[0_0_30px_rgba(255,122,0,0.15)]"
               >
                 {/* Thumbnail Container */}
                 <div className="relative aspect-video w-full overflow-hidden bg-black">
-                  <img
+                  <BlurUpImage
                     src={video.thumbnail}
                     alt={video.title[lang]}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-108 opacity-85 group-hover:opacity-100"
@@ -202,10 +222,10 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ lang }) => {
                 {/* Video Info Footer */}
                 <div className="p-6 flex items-start justify-between gap-4">
                   <div>
-                    <h3 className="font-display text-2xl uppercase text-white tracking-wider leading-snug group-hover:text-[#ff7a00] transition-colors">
+                    <h3 className="font-serif-editorial text-2xl text-[#1a1a1a] tracking-wide leading-snug group-hover:text-[#ff7a00] transition-colors">
                       {video.title[lang]}
                     </h3>
-                    <div className="flex items-center gap-2 text-xs text-[#e0c0af] mt-2">
+                    <div className="flex items-center gap-2 text-xs text-[#1a1a1a]/60 mt-2">
                       <MapPin className="w-3.5 h-3.5 text-[#ff7a00]" />
                       <span>{video.location}</span>
                     </div>
@@ -254,7 +274,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ lang }) => {
               className="max-w-full max-h-[70vh] object-contain rounded-2xl border border-white/10 shadow-2xl"
             />
             <div className="mt-4 text-center">
-              <h3 className="font-display text-3xl uppercase text-white tracking-wider">
+              <h3 className="font-serif-editorial text-3xl text-white tracking-wide">
                 {activePhoto.title[lang]}
               </h3>
               <p className="font-body text-xs text-[#ff7a00] uppercase tracking-widest mt-1 flex items-center justify-center gap-1">
@@ -307,7 +327,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ lang }) => {
                     {selectedVideo.duration}
                   </span>
                 </div>
-                <h3 className="font-display text-2xl md:text-3xl uppercase text-white tracking-wider">
+                <h3 className="font-serif-editorial text-2xl md:text-3xl text-white tracking-wide">
                   {selectedVideo.title[lang]}
                 </h3>
                 <p className="font-body text-xs text-[#e0c0af] flex items-center gap-1.5 mt-1">
@@ -319,7 +339,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ lang }) => {
               <a
                 href="#booking"
                 onClick={() => setSelectedVideo(null)}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#ff7a00] text-[#2b1700] font-display text-sm font-bold uppercase tracking-wider hover:bg-white transition-colors shadow-lg"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#ff7a00] text-[#2b1700] font-mono-meta text-xs font-bold uppercase tracking-wider hover:bg-white transition-colors shadow-lg"
               >
                 <span>{lang === 'es' ? 'Reservar Esta Ruta' : 'Book This Tour'}</span>
               </a>

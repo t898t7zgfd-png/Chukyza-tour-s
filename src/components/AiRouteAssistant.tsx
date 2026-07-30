@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'motion/react';
 import { Language } from '../types';
 import { Sparkles, Send, Bot, Compass, ArrowRight, Loader2 } from 'lucide-react';
 
@@ -118,7 +119,13 @@ export const AiRouteAssistant: React.FC<AiRouteAssistantProps> = ({
   };
 
   return (
-    <section className="py-20 bg-[#0e0e0e] border-t border-white/5 relative overflow-hidden">
+    <motion.section 
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-100px' }}
+      transition={{ duration: 0.8, ease: 'easeOut' }}
+      className="py-20 bg-[#0e0e0e] border-t border-white/5 relative overflow-hidden"
+    >
       <div className="max-w-5xl mx-auto px-4 md:px-12 relative z-10">
         <div className="bg-[#1b1c1c] rounded-[32px] p-8 md:p-12 border border-[#ff7a00]/30 shadow-2xl relative">
           <div className="absolute top-0 right-12 -translate-y-1/2 bg-[#ff7a00] text-[#2b1700] px-4 py-1.5 rounded-full font-body text-xs font-extrabold uppercase tracking-widest flex items-center gap-1.5 shadow-lg">
@@ -127,13 +134,17 @@ export const AiRouteAssistant: React.FC<AiRouteAssistantProps> = ({
           </div>
 
           <div className="text-center mb-8">
-            <h3 className="font-display text-4xl md:text-5xl uppercase text-white tracking-wider">
-              {lang === 'es' ? '¿No sabes cuál elegir?' : 'Not Sure Which Route to Pick?'}
+            <h3 className="font-serif-editorial text-4xl md:text-5xl text-white tracking-wider">
+              {lang === 'es' ? (
+                <>AI Adventure <span className="italic text-[#ff7a00]">Matchmaker</span></>
+              ) : (
+                <>AI Adventure <span className="italic text-[#ff7a00]">Matchmaker</span></>
+              )}
             </h3>
-            <p className="font-body text-xs sm:text-sm text-[#e0c0af] max-w-lg mx-auto mt-2">
+            <p className="font-mono-meta text-xs text-[#e0c0af] max-w-lg mx-auto mt-2">
               {lang === 'es'
-                ? 'Cuéntale a nuestro Asistente de IA qué tipo de vibra o aventura buscas hoy y te sugerirá la ruta ideal.'
-                : 'Tell our AI Matcher what kind of vibe or experience you want today, and we will find your perfect route.'}
+                ? 'Describe tus preferencias y nuestro motor de IA sugerirá la máquina y ruta perfecta.'
+                : 'Describe your ideal morning and we will suggest the perfect machine and trail for your personality.'}
             </p>
           </div>
 
@@ -200,6 +211,6 @@ export const AiRouteAssistant: React.FC<AiRouteAssistantProps> = ({
           )}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 };

@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Language } from '../types';
 import { LOGO_IMAGE } from '../data/toursData';
-import { Menu, X, Globe, PhoneCall } from 'lucide-react';
+import { Menu, X, Globe, PhoneCall, Eye } from 'lucide-react';
 import { WeatherWidget } from './WeatherWidget';
 
 interface HeaderProps {
   lang: Language;
   setLang: (l: Language) => void;
   onOpenBooking: (tourId?: string, packageId?: string) => void;
+  isHighContrast: boolean;
+  setIsHighContrast: (val: boolean) => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ lang, setLang, onOpenBooking }) => {
+export const Header: React.FC<HeaderProps> = ({ lang, setLang, onOpenBooking, isHighContrast, setIsHighContrast }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -33,11 +35,11 @@ export const Header: React.FC<HeaderProps> = ({ lang, setLang, onOpenBooking }) 
 
   return (
     <header
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 md:left-[80px] w-full md:w-[calc(100%-80px)] z-40 transition-all duration-300 ${
         isScrolled
           ? 'bg-[#0e0e0e]/90 backdrop-blur-xl border-b border-white/10 shadow-2xl py-3'
           : 'glass-nav border-b border-white/10 py-4'
-      } px-4 md:px-16 flex justify-between items-center`}
+      } px-4 md:px-12 flex justify-between items-center`}
     >
       {/* Brand Logo */}
       <a href="#" className="flex items-center gap-3 group">
@@ -71,10 +73,24 @@ export const Header: React.FC<HeaderProps> = ({ lang, setLang, onOpenBooking }) 
         ))}
       </nav>
 
-      {/* Weather Widget + Language Switcher + Book Now CTA */}
+      {/* Weather Widget + High Contrast + Language Switcher + Book Now CTA */}
       <div className="hidden sm:flex items-center gap-3">
         {/* Weather Widget for Mazamitla */}
         <WeatherWidget lang={lang} />
+
+        {/* High Contrast Toggle */}
+        <button
+          onClick={() => setIsHighContrast(!isHighContrast)}
+          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-bold uppercase tracking-wider transition-all ${
+            isHighContrast
+              ? 'bg-yellow-400 text-black border-white shadow-[0_0_15px_rgba(255,255,0,0.5)]'
+              : 'bg-[#2a2a2a]/60 text-[#ff7a00] border-white/10 hover:bg-[#353535]'
+          }`}
+          title={isHighContrast ? 'Disable High Contrast' : 'High Contrast Accessibility Mode'}
+        >
+          <Eye className="w-3.5 h-3.5" />
+          <span className="hidden xl:inline">{isHighContrast ? 'Contrast: High' : 'Contrast'}</span>
+        </button>
 
         {/* Language Toggle */}
         <button
@@ -109,6 +125,15 @@ export const Header: React.FC<HeaderProps> = ({ lang, setLang, onOpenBooking }) 
       {/* Mobile Toggle Button */}
       <div className="flex sm:hidden items-center gap-2">
         <WeatherWidget lang={lang} />
+        <button
+          onClick={() => setIsHighContrast(!isHighContrast)}
+          className={`p-2 rounded-lg border text-xs font-bold ${
+            isHighContrast ? 'bg-yellow-400 text-black border-white' : 'bg-[#2a2a2a] text-[#ff7a00] border-white/10'
+          }`}
+          title="High Contrast"
+        >
+          <Eye className="w-4 h-4" />
+        </button>
         <button
           onClick={() => setLang(lang === 'es' ? 'en' : 'es')}
           className="text-xs font-bold text-[#ff7a00] bg-[#2a2a2a] px-2.5 py-1.5 rounded-lg border border-white/10"

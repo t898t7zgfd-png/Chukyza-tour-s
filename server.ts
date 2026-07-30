@@ -219,7 +219,7 @@ Respond in JSON format with fields:
 - customTip: a 1-sentence pro tip from the lead guide in '${lang || 'es'}'`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+      model: "gemini-3.1-flash-lite",
       contents: query,
       config: {
         systemInstruction: systemPrompt,

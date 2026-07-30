@@ -4,12 +4,23 @@
   .font-display {
     font-family: 'Bebas Neue', sans-serif;
   }
+  .font-serif-editorial {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+  }
+  .font-mono-meta {
+    font-family: 'Geist Mono', monospace;
+  }
   .font-headline {
     font-family: 'Bebas Neue', sans-serif;
   }
   .font-body {
     font-family: 'Inter', sans-serif;
   }
+}
+
+.vertical-text {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
 }
 
 .glass-nav {
@@ -53,6 +64,53 @@
   transform: translateY(-8px);
 }
 
+/* High Contrast Mode Overrides for Accessibility */
+.high-contrast,
+.high-contrast div,
+.high-contrast section,
+.high-contrast header,
+.high-contrast footer {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+.high-contrast h1,
+.high-contrast h2,
+.high-contrast h3,
+.high-contrast h4,
+.high-contrast h5,
+.high-contrast h6,
+.high-contrast span,
+.high-contrast p,
+.high-contrast a,
+.high-contrast label {
+  color: #ffffff !important;
+}
+
+.high-contrast .text-\[\#ff7a00\],
+.high-contrast span.text-\[\#ff7a00\],
+.high-contrast h1 span,
+.high-contrast h2 span {
+  color: #ffff00 !important;
+  text-shadow: 0 0 12px rgba(255, 255, 0, 0.6) !important;
+}
+
+.high-contrast button.bg-\[\#ff7a00\],
+.high-contrast .bg-\[\#ff7a00\] {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+  font-weight: 900 !important;
+  border: 2px solid #ffffff !important;
+}
+
+.high-contrast .border-white\/10,
+.high-contrast .border-white\/20,
+.high-contrast .border {
+  border-color: #ffffff !important;
+  border-width: 2px !important;
+}
+
 /* Material Symbols customization */
 .material-symbols-outlined {
   font-variation-settings:
@@ -84,3 +142,4 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #ff7a00;
 }
+
